@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Smart Image Slider</title>
+
+    <!-- ================= CSS ================= -->
+    <style>
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #e8e8e8;
+      }
+
+      #slider {
+        width: 650px;
+        text-align: center;
+        margin: 25px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 0 20px #bbb;
+      }
+
+      #sliderTitle {
+        font-size: 26px;
+        font-weight: 800;
+        margin-bottom: 15px;
+        background: linear-gradient(45deg, #ff6a00, #ff416c, #ff4b2b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: 1px;
+      }
+
+      img {
+        width: 500px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 0 15px #999;
+      }
+
+      #slideCaption {
+        margin-top: 15px;
+        font-size: 22px;
+        font-weight: 700;
+        background: linear-gradient(45deg, #ff4b2b, #ff416c, #ff6a00);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      #counter {
+        font-size: 16px;
+        color: #444;
+        margin-bottom: 10px;
+      }
+
+      button {
+        margin: 10px;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 6px;
+        border: none;
+        background: #333;
+        color: white;
+        font-size: 15px;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        background: #111;
+        transform: scale(1.05);
+      }
+
+      #add-slide {
+        text-align: center;
+        margin-top: 25px;
+        background: white;
+        padding: 20px;
+        width: 650px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 15px;
+        box-shadow: 0 0 20px #bbb;
+      }
+
+      input {
+        padding: 10px;
+        width: 350px;
+        border-radius: 8px;
+        border: 2px solid #aaa;
+        font-size: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ================= SLIDER UI ================= -->
+    <div id="slider">
+      <h2 id="sliderTitle">🌟 Smart Image Slider 🌟</h2>
+
+      <img id="slideImage" src="" />
+      <p id="slideCaption"></p>
+      <p id="counter"></p>
+
+      <button onclick="prevSlide()">Prev</button>
+      <button onclick="nextSlide()">Next</button><br />
+
+      <button onclick="startAutoPlay()">Start Auto-Play</button>
+      <button onclick="stopAutoPlay()">Stop Auto-Play</button>
+    </div>
+
+    <!-- ================= ADD NEW SLIDE ================= -->
+    <div id="add-slide">
+      <h3>Add New Slide</h3>
+      <input
+        type="text"
+        id="newImg"
+        placeholder="Enter Image URL"
+      /><br /><br />
+      <input
+        type="text"
+        id="newCaption"
+        placeholder="Enter Beautiful Caption"
+      /><br /><br />
+      <button onclick="addNewSlide()">Add Slide</button>
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+      
+      const slides = [
+        {
+          img: "https://picsum.photos/id/1018/550/350",
+          caption: "✨ Embrace the Beauty of the Golden Hour ✨",
+        },
+
+        {
+          img: "https://picsum.photos/id/1015/550/350",
+          caption: "🏔 Where Mountains Meet the Sky — Breathtaking View",
+        },
+
+        {
+          img: "https://picsum.photos/id/1011/550/350",
+          caption: "🌆 The City Lights Whisper Stories of the Night",
+        },
+      ];
+
+      let currentIndex = 0;
+      let slideTimer = null;
+
+      const showSlide = (index) => {
+        document.getElementById("slideImage").src = slides[index].img;
+        document.getElementById("slideCaption").innerHTML =
+          slides[index].caption;
+        document.getElementById("counter").innerHTML = `Slide ${index + 1} of ${
+          slides.length
+        }`;
+
+        console.log(`Slide ${index + 1}: ${slides[index].caption}`);
+      };
+
+      const nextSlide = () => {
+        if (currentIndex < slides.length - 1) {
+          currentIndex++;
+          showSlide(currentIndex);
+        } else {
+          console.log("Message: This is the last slide.");
+          alert("This is the last slide");
+        }
+      };
+
+      const prevSlide = () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          showSlide(currentIndex);
+        } else {
+          console.log("Message: This is the first slide.");
+          alert("This is the first slide");
+        }
+      };
+
+      const addNewSlide = () => {
+        const imgInput = document.getElementById("newImg").value;
+        const captionInput = document.getElementById("newCaption").value;
+
+        if (imgInput === "" || captionInput === "") {
+          alert("Please enter both image URL and caption");
+          return;
+        }
+
+        const newSlide = {
+          img: imgInput,
+          caption: "✨ " + captionInput + " ✨",
+        };
+        slides.push(newSlide);
+
+        console.log("New slide added:", newSlide);
+
+        currentIndex = slides.length - 1;
+        showSlide(currentIndex);
+
+        document.getElementById("newImg").value = "";
+        document.getElementById("newCaption").value = "";
+      };
+
+      const startAutoPlay = () => {
+        if (slideTimer === null) {
+          slideTimer = setInterval(() => {
+            if (currentIndex < slides.length - 1) {
+              currentIndex++;
+            } else {
+              currentIndex = 0;
+            }
+            showSlide(currentIndex);
+          }, 3000);
+
+          console.log("Auto-play started");
+        }
+      };
+
+      const stopAutoPlay = () => {
+        clearInterval(slideTimer);
+        slideTimer = null;
+        console.log("Auto-play stopped");
+      };
+
+      showSlide(currentIndex);
+    </script>
+  </body>
+</html>
